@@ -1,0 +1,33 @@
+{ "name": "ipc-proxy0-pmb",
+  "version": "0.1.0",
+  "description": "Convenience wrapper for child_process.fork",
+  "keywords": [ "child_process" ],
+
+  "author": "M.K. (https://github.com/mk-pmb)",
+  "homepage": "https://github.com/mk-pmb/ipc-proxy0-pmb-js/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/ipc-proxy0-pmb-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/ipc-proxy0-pmb-js/issues"
+  },
+  "contributors": [],
+
+  "private": false, "license": "ISC",
+
+  "main": "ipc.js",
+  "scripts": { "test": "nodejs test.usage.js" },
+  "directories": { "test": "test" },
+
+  "dependencies": {
+    "child-exit-nodeback": "^1.0.2"
+  },
+  "devDependencies": {
+    "async": "^2.5.0",
+    "equal-pmb": "^0.1.14"
+  },
+
+
+  "npm vs. BOM = Unexpected token": "-*- coding: UTF-8 -*-"
+}

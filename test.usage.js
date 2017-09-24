@@ -59,9 +59,33 @@ EX.log.expect = function (add) { EX.log.want = EX.log.want.concat(add); };
     equal(typeof whale.pid, 'number');
     whale.on('error', logArgs('whale fail'));
     test.log.expect([
-      [ 'whale fail', '{Error "IPC proxy child error:'
+      [ 'whale fail', '{Error "IPC proxy child:'
                     + ' Cannot find module \'/dev/null/404.js\'"}' ],
-      [ 'whale quit', '{Error "Exit status 4"}', '{ChildProcess}' ],
+      [ 'whale quit', '{Error "IPC proxy child:'
+                    + ' Cannot find module \'/dev/null/404.js\'"}',
+        '{ChildProcess}' ],
+    ]);
+  });
+
+  test.add(function () {
+    var whale = ipcProxy.spawn('querystring', logArgs('whale quit'));
+    whale.send({ mtd: "method doesn't exist", ret: true, arg: [] });
+    whale.on('error', logArgs('whale fail'));
+    test.log.expect([
+      [ 'whale fail', '{Error "IPC proxy child:'
+                    + ' Cannot read property \'apply\' of undefined"}' ],
+      [ 'whale quit', '{Error "IPC proxy child:'
+                    + ' Cannot read property \'apply\' of undefined"}',
+        '{ChildProcess}' ],
+    ]);
+  });
+
+  test.add(function () {
+    var oneshot = ipcProxy.spawn('querystring', logArgs('oneshot quit'));
+    oneshot.send({ mtd: 'parse', ret: true, fin: true,
+      arg: [ 'Hello=World&foo=23&bar=42' ] });
+    test.log.expect([
+      [ 'oneshot quit', false, { Hello: 'World', foo: '23', bar: '42' } ],
     ]);
   });
   //#r

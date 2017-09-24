@@ -31,7 +31,8 @@ the `close:nodeback` event from package `child-exit-nodeback`.)
 ### .err2dict(error), .dict2err(dict)
 
 These functions translate between Error objects and plain, JSON-able
-(dictionary) objects. Currently they're just aliases for `error-to-json`,
+(dictionary) objects.
+Currently they're based heavily on the `error-to-json` package,
 but implementation may change without notice.
 
 
@@ -56,7 +57,7 @@ from [test.usage.js](test.usage.js):
 
 <!--#include file="test.usage.js" start="  //#u" stop="  //#r"
   outdent="  " code="javascript" -->
-<!--#verbatim lncnt="34" -->
+<!--#verbatim lncnt="58" -->
 ```javascript
 var logArgs = test.log.args, ipcProxy = require('ipc-proxy0-pmb'),
   child = ipcProxy.spawn('querystring', logArgs('child quit'));
@@ -85,9 +86,33 @@ test.add(function () {
   equal(typeof whale.pid, 'number');
   whale.on('error', logArgs('whale fail'));
   test.log.expect([
-    [ 'whale fail', '{Error "IPC proxy child error:'
+    [ 'whale fail', '{Error "IPC proxy child:'
                   + ' Cannot find module \'/dev/null/404.js\'"}' ],
-    [ 'whale quit', '{Error "Exit status 4"}', '{ChildProcess}' ],
+    [ 'whale quit', '{Error "IPC proxy child:'
+                  + ' Cannot find module \'/dev/null/404.js\'"}',
+      '{ChildProcess}' ],
+  ]);
+});
+
+test.add(function () {
+  var whale = ipcProxy.spawn('querystring', logArgs('whale quit'));
+  whale.send({ mtd: "method doesn't exist", ret: true, arg: [] });
+  whale.on('error', logArgs('whale fail'));
+  test.log.expect([
+    [ 'whale fail', '{Error "IPC proxy child:'
+                  + ' Cannot read property \'apply\' of undefined"}' ],
+    [ 'whale quit', '{Error "IPC proxy child:'
+                  + ' Cannot read property \'apply\' of undefined"}',
+      '{ChildProcess}' ],
+  ]);
+});
+
+test.add(function () {
+  var oneshot = ipcProxy.spawn('querystring', logArgs('oneshot quit'));
+  oneshot.send({ mtd: 'parse', ret: true, fin: true,
+    arg: [ 'Hello=World&foo=23&bar=42' ] });
+  test.log.expect([
+    [ 'oneshot quit', false, { Hello: 'World', foo: '23', bar: '42' } ],
   ]);
 });
 ```

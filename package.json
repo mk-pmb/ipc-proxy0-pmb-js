@@ -1,5 +1,5 @@
 { "name": "ipc-proxy0-pmb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Convenience wrapper for child_process.fork",
   "keywords": [ "child_process" ],
 
